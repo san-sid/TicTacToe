@@ -47,7 +47,7 @@ export default function App() {
   const handlePlay = (index: number) => {
     if (game.soundEnabled) unlockSoftSounds()
     game.play(index)
-    if (game.hapticsEnabled) navigator.vibrate?.(8)
+    if (game.hapticsEnabled) navigator.vibrate?.([55, 30, 55])
   }
 
   // The game comes first and the settings sit below it. That keeps the board and
