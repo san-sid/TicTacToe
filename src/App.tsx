@@ -6,6 +6,7 @@ import { Segmented } from './components/Segmented.tsx'
 import type { Difficulty } from './game/ai.ts'
 import type { Player } from './game/board.ts'
 import type { Mode } from './game/reducer.ts'
+import { playHaptic } from './game/haptics.ts'
 import { playSoftSound, unlockSoftSounds } from './game/sound.ts'
 import { statusText } from './game/status.ts'
 import { useGame } from './game/useGame.ts'
@@ -47,7 +48,7 @@ export default function App() {
   const handlePlay = (index: number) => {
     if (game.soundEnabled) unlockSoftSounds()
     game.play(index)
-    if (game.hapticsEnabled) navigator.vibrate?.([55, 30, 55])
+    if (game.hapticsEnabled) void playHaptic()
   }
 
   // The game comes first and the settings sit below it. That keeps the board and

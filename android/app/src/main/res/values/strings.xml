@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">XO</string>
+    <string name="title_activity_main">XO</string>
+    <string name="package_name">com.sansid.xo</string>
+    <string name="custom_url_scheme">com.sansid.xo</string>
+</resources>

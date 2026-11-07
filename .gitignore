@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!android/gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -30,3 +31,10 @@ coverage/
 
 # macOS
 .DS_Store
+
+# Capacitor native build artifacts
+android/.gradle/
+android/build/
+android/app/build/
+ios/App/Pods/
+ios/DerivedData/

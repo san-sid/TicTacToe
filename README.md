@@ -14,6 +14,7 @@ A clean, ad-free tic-tac-toe game built with React and TypeScript. No ads, no ac
 - Scoreboard that persists on your device between visits
 - Light and dark mode that follow your system setting
 - Animated marks and win line, with reduced-motion support
+- Optional sound effects and haptics (native impact feedback in the mobile apps)
 - Keyboard and screen-reader friendly
 
 ## Getting started
@@ -28,12 +29,26 @@ npm run build    # type-check and build for production into dist/
 npm run preview  # serve the production build locally
 ```
 
+## Native mobile apps
+
+The project includes Capacitor iOS and Android apps. Native builds require Xcode on macOS for iOS, or Android Studio with the Android SDK for Android.
+
+```bash
+npm run cap:sync          # build the web app and sync both native projects
+npm run cap:open:ios      # open the iOS project in Xcode
+npm run cap:open:android  # open the Android project in Android Studio
+```
+
+Build and run on a simulator or device from Xcode or Android Studio. The haptics setting uses native impact feedback in the installed apps; browser vibration remains dependent on browser and device support.
+
 ## Tech stack
 
 | Area | Choice |
 | --- | --- |
 | UI | React 19 + TypeScript |
 | Build tool | Vite |
+| Native apps | Capacitor (iOS and Android) |
+| Haptics | Capacitor Haptics |
 | Animation | Framer Motion |
 | Styling | Plain CSS with design tokens (`src/index.css`) |
 | Tests | Vitest |
@@ -48,6 +63,7 @@ src/
     reducer.ts          Game state machine: moves, rounds, scores, settings
     status.ts           The one-line message under the board
     storage.ts          Validated save/load of settings and scores
+    haptics.ts          Native impact feedback with browser vibration fallback
     useGame.ts          React hook that connects the above to the UI
     *.test.ts           Unit tests
   components/           Board, Mark, WinLine, Scoreboard, Segmented control
@@ -75,4 +91,4 @@ The game rules live in `src/game` and know nothing about React. That keeps them 
 
 1. Private rooms with a shareable link (Node + WebSockets)
 2. Quick match with random opponents, nicknames and a leaderboard
-3. Installable PWA, then an iOS app wrapper if you want the App Store
+3. Installable PWA
