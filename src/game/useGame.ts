@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { chooseMove } from './ai.ts'
 import type { Difficulty } from './ai.ts'
 import type { Player } from './board.ts'
@@ -10,6 +10,7 @@ import { loadSaved, save } from './storage.ts'
 const THINK_MS = 450
 
 export function useGame() {
+  const [soundEnabled, setSoundEnabled] = useState(() => loadSaved()?.soundEnabled ?? true)
   const [state, dispatch] = useReducer(reducer, undefined, () => {
     const saved = loadSaved()
     return createState(saved?.settings, saved?.scores)
@@ -30,11 +31,13 @@ export function useGame() {
   }, [aiThinking, board, turn, difficulty])
 
   useEffect(() => {
-    save({ settings: { mode, difficulty, humanMark }, scores })
-  }, [mode, difficulty, humanMark, scores])
+    save({ settings: { mode, difficulty, humanMark }, scores, soundEnabled })
+  }, [mode, difficulty, humanMark, scores, soundEnabled])
 
   return {
     state,
+    soundEnabled,
+    setSoundEnabled,
     humanTurn,
     aiThinking,
     play: (index: number) => {

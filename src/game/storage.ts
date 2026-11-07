@@ -6,6 +6,7 @@ const KEY = 'xo:v1'
 export interface Saved {
   settings: Settings
   scores: Scores
+  soundEnabled: boolean
 }
 
 const isCount = (value: unknown): value is number =>
@@ -21,18 +22,24 @@ export function parseSaved(raw: string | null): Saved | null {
     const data: unknown = JSON.parse(raw)
     if (typeof data !== 'object' || data === null) return null
 
-    const { settings, scores } = data as Record<string, Record<string, unknown> | undefined>
+    const { settings, scores, soundEnabled } = data as Record<string, unknown>
     if (!settings || !scores) return null
+    if (typeof settings !== 'object' || typeof scores !== 'object') return null
+    if (soundEnabled !== undefined && typeof soundEnabled !== 'boolean') return null
 
-    const { mode, difficulty, humanMark } = settings
+    const { mode, difficulty, humanMark } = settings as Record<string, unknown>
     if (mode !== 'ai' && mode !== 'local') return null
     if (!isDifficulty(difficulty)) return null
     if (humanMark !== 'X' && humanMark !== 'O') return null
 
-    const { X, O, draws } = scores
+    const { X, O, draws } = scores as Record<string, unknown>
     if (!isCount(X) || !isCount(O) || !isCount(draws)) return null
 
-    return { settings: { mode, difficulty, humanMark }, scores: { X, O, draws } }
+    return {
+      settings: { mode, difficulty, humanMark },
+      scores: { X, O, draws },
+      soundEnabled: soundEnabled ?? true,
+    }
   } catch {
     return null
   }

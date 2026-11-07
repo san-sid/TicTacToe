@@ -266,6 +266,14 @@ button {
   transition: background-color 0.2s ease;
 }
 
+.board[data-winner='x'] .cell[data-dimmed='false'] .cell__face {
+  box-shadow: var(--shadow), 0 0 22px color-mix(in srgb, var(--x) 32%, transparent);
+}
+
+.board[data-winner='o'] .cell[data-dimmed='false'] .cell__face {
+  box-shadow: var(--shadow), 0 0 22px color-mix(in srgb, var(--o) 32%, transparent);
+}
+
 @media (hover: hover) {
   .cell[aria-disabled='false']:hover .cell__face {
     background: var(--face-hover);
@@ -323,6 +331,54 @@ button {
   color: var(--o);
 }
 
+.celebration {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.celebration__spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: celebration-sparkle 950ms ease-out both;
+}
+
+.celebration__spark--blue {
+  background: var(--x);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--x) 70%, transparent);
+}
+
+.celebration__spark--red {
+  background: var(--o);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--o) 70%, transparent);
+}
+
+.celebration__spark--yellow {
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+@keyframes celebration-sparkle {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.2) rotate(0deg);
+  }
+
+  35% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.2) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.45) rotate(135deg);
+  }
+}
+
 /* ---------------------------------------------------------------
    Status, actions, footer
    --------------------------------------------------------------- */
@@ -358,6 +414,7 @@ button {
   color: var(--on-accent);
   border: 0;
   border-radius: 999px;
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--accent) 35%, transparent);
   font-size: 17px;
   font-weight: 600;
   cursor: pointer;
@@ -392,6 +449,63 @@ button {
   cursor: default;
 }
 
+.sound-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 6px 2px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px;
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.sound-toggle__knob {
+  position: relative;
+  width: 42px;
+  height: 25px;
+  background: var(--segment-bg);
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.sound-toggle__knob::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  background: var(--segment-pill);
+  border-radius: 50%;
+  box-shadow: var(--segment-pill-shadow);
+  content: '';
+  transition: transform 0.2s ease;
+}
+
+.sound-toggle[aria-checked='true'] .sound-toggle__knob {
+  background: var(--accent);
+}
+
+.sound-toggle[aria-checked='true'] .sound-toggle__knob::after {
+  transform: translateX(17px);
+}
+
+.sound-toggle__state {
+  min-width: 24px;
+  text-align: left;
+}
+
 .note {
   margin: 0;
   font-size: 13px;
@@ -407,5 +521,9 @@ button {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+
+  .celebration__spark {
+    animation: none;
   }
 }

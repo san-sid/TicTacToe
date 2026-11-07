@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Board } from './components/Board.tsx'
 import { Scoreboard } from './components/Scoreboard.tsx'
@@ -5,6 +6,7 @@ import { Segmented } from './components/Segmented.tsx'
 import type { Difficulty } from './game/ai.ts'
 import type { Player } from './game/board.ts'
 import type { Mode } from './game/reducer.ts'
+import { playSoftSound, unlockSoftSounds } from './game/sound.ts'
 import { statusText } from './game/status.ts'
 import { useGame } from './game/useGame.ts'
 
@@ -31,8 +33,19 @@ export default function App() {
   const message = statusText(state)
   const roundOver = state.status !== 'playing'
   const hasScores = state.scores.X + state.scores.O + state.scores.draws > 0
+  const previousBoard = useRef(state.board)
+
+  useEffect(() => {
+    const changed = previousBoard.current !== state.board
+    previousBoard.current = state.board
+    if (!changed || !game.soundEnabled || !state.board.some(Boolean)) return
+
+    const sound = state.status === 'won' ? 'win' : state.status === 'draw' ? 'draw' : 'move'
+    void playSoftSound(sound)
+  }, [game.soundEnabled, state.board, state.status])
 
   const handlePlay = (index: number) => {
+    if (game.soundEnabled) unlockSoftSounds()
     game.play(index)
     // A tiny tap of haptic feedback where the browser supports it (e.g. Android).
     navigator.vibrate?.(8)
@@ -119,6 +132,25 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <div className="sound-setting">
+          <span id="sound-setting-label">Sound effects</span>
+          <button
+            type="button"
+            className="sound-toggle"
+            role="switch"
+            aria-checked={game.soundEnabled}
+            aria-labelledby="sound-setting-label"
+            onClick={() => {
+              const enabled = !game.soundEnabled
+              if (enabled) unlockSoftSounds()
+              game.setSoundEnabled(enabled)
+            }}
+          >
+            <span className="sound-toggle__knob" />
+            <span className="sound-toggle__state">{game.soundEnabled ? 'On' : 'Off'}</span>
+          </button>
+        </div>
       </section>
 
       <footer className="footer">

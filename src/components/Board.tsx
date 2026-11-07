@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Board as BoardState, Line, Player } from '../game/board.ts'
+import { Celebration } from './Celebration.tsx'
 import { Mark } from './Mark.tsx'
 import { WinLine } from './WinLine.tsx'
 
@@ -26,7 +27,12 @@ interface BoardProps {
 
 export function Board({ board, winLine, winner, interactive, onPlay }: BoardProps) {
   return (
-    <div className="board" role="group" aria-label="Game board">
+    <div
+      className="board"
+      data-winner={winner === 'X' ? 'x' : winner === 'O' ? 'o' : undefined}
+      role="group"
+      aria-label="Game board"
+    >
       {board.map((cell, index) => {
         const canPlay = interactive && cell === null
         // Once someone wins, fade the squares that aren't part of the line.
@@ -53,6 +59,7 @@ export function Board({ board, winLine, winner, interactive, onPlay }: BoardProp
         )
       })}
       {winLine && winner && <WinLine line={winLine} winner={winner} />}
+      {winner && <Celebration />}
     </div>
   )
 }

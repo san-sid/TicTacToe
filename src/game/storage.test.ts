@@ -4,11 +4,17 @@ import { parseSaved } from './storage.ts'
 const valid = {
   settings: { mode: 'ai', difficulty: 'unbeatable', humanMark: 'O' },
   scores: { X: 3, O: 1, draws: 2 },
+  soundEnabled: true,
 }
 
 describe('parseSaved', () => {
   it('reads valid data', () => {
     expect(parseSaved(JSON.stringify(valid))).toEqual(valid)
+  })
+
+  it('defaults sound effects on for previously saved games', () => {
+    const { soundEnabled: _soundEnabled, ...legacy } = valid
+    expect(parseSaved(JSON.stringify(legacy))?.soundEnabled).toBe(true)
   })
 
   it('returns null when nothing is stored', () => {
@@ -26,6 +32,7 @@ describe('parseSaved', () => {
     expect(parseSaved(JSON.stringify({ ...valid, settings: { ...valid.settings, difficulty: 'hard' } }))).toBeNull()
     expect(parseSaved(JSON.stringify({ ...valid, scores: { X: -1, O: 0, draws: 0 } }))).toBeNull()
     expect(parseSaved(JSON.stringify({ ...valid, scores: { X: 1.5, O: 0, draws: 0 } }))).toBeNull()
+    expect(parseSaved(JSON.stringify({ ...valid, soundEnabled: 'yes' }))).toBeNull()
     expect(parseSaved(JSON.stringify({ settings: valid.settings }))).toBeNull()
   })
 })
