@@ -47,8 +47,7 @@ export default function App() {
   const handlePlay = (index: number) => {
     if (game.soundEnabled) unlockSoftSounds()
     game.play(index)
-    // A tiny tap of haptic feedback where the browser supports it (e.g. Android).
-    navigator.vibrate?.(8)
+    if (game.hapticsEnabled) navigator.vibrate?.(8)
   }
 
   // The game comes first and the settings sit below it. That keeps the board and
@@ -57,6 +56,56 @@ export default function App() {
   return (
     <main className="app">
       <header className="header">
+        <div className="preference-controls" role="group" aria-label="Game preferences">
+          <button
+            type="button"
+            className="preference-icon"
+            data-enabled={game.soundEnabled}
+            aria-label={`Sound effects ${game.soundEnabled ? 'on' : 'off'}`}
+            aria-pressed={game.soundEnabled}
+            title={`Sound effects ${game.soundEnabled ? 'on' : 'off'}`}
+            onClick={() => {
+              const enabled = !game.soundEnabled
+              if (enabled) unlockSoftSounds()
+              game.setSoundEnabled(enabled)
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+              {game.soundEnabled ? (
+                <>
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                  <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+                </>
+              ) : (
+                <>
+                  <path d="m16 9 5 6" />
+                  <path d="m21 9-5 6" />
+                </>
+              )}
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="preference-icon"
+            data-enabled={game.hapticsEnabled}
+            aria-label={`Haptics ${game.hapticsEnabled ? 'on' : 'off'}`}
+            aria-pressed={game.hapticsEnabled}
+            title={`Haptics ${game.hapticsEnabled ? 'on' : 'off'}`}
+            onClick={() => game.setHapticsEnabled(!game.hapticsEnabled)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="7" y="3" width="10" height="18" rx="2" />
+              <path d="M10 6h4M10 18h4" />
+              {game.hapticsEnabled && (
+                <>
+                  <path d="M4 8a7 7 0 0 0 0 8" />
+                  <path d="M20 8a7 7 0 0 1 0 8" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
         <h1 className="title">
           <span className="title__x">X</span>
           <span className="title__o">O</span>
@@ -133,24 +182,6 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <div className="sound-setting">
-          <span id="sound-setting-label">Sound effects</span>
-          <button
-            type="button"
-            className="sound-toggle"
-            role="switch"
-            aria-checked={game.soundEnabled}
-            aria-labelledby="sound-setting-label"
-            onClick={() => {
-              const enabled = !game.soundEnabled
-              if (enabled) unlockSoftSounds()
-              game.setSoundEnabled(enabled)
-            }}
-          >
-            <span className="sound-toggle__knob" />
-            <span className="sound-toggle__state">{game.soundEnabled ? 'On' : 'Off'}</span>
-          </button>
-        </div>
       </section>
 
       <footer className="footer">

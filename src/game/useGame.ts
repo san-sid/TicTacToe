@@ -11,6 +11,7 @@ const THINK_MS = 450
 
 export function useGame() {
   const [soundEnabled, setSoundEnabled] = useState(() => loadSaved()?.soundEnabled ?? true)
+  const [hapticsEnabled, setHapticsEnabled] = useState(() => loadSaved()?.hapticsEnabled ?? true)
   const [state, dispatch] = useReducer(reducer, undefined, () => {
     const saved = loadSaved()
     return createState(saved?.settings, saved?.scores)
@@ -31,13 +32,15 @@ export function useGame() {
   }, [aiThinking, board, turn, difficulty])
 
   useEffect(() => {
-    save({ settings: { mode, difficulty, humanMark }, scores, soundEnabled })
-  }, [mode, difficulty, humanMark, scores, soundEnabled])
+    save({ settings: { mode, difficulty, humanMark }, scores, soundEnabled, hapticsEnabled })
+  }, [mode, difficulty, humanMark, scores, soundEnabled, hapticsEnabled])
 
   return {
     state,
     soundEnabled,
     setSoundEnabled,
+    hapticsEnabled,
+    setHapticsEnabled,
     humanTurn,
     aiThinking,
     play: (index: number) => {

@@ -7,6 +7,7 @@ export interface Saved {
   settings: Settings
   scores: Scores
   soundEnabled: boolean
+  hapticsEnabled: boolean
 }
 
 const isCount = (value: unknown): value is number =>
@@ -22,10 +23,11 @@ export function parseSaved(raw: string | null): Saved | null {
     const data: unknown = JSON.parse(raw)
     if (typeof data !== 'object' || data === null) return null
 
-    const { settings, scores, soundEnabled } = data as Record<string, unknown>
+    const { settings, scores, soundEnabled, hapticsEnabled } = data as Record<string, unknown>
     if (!settings || !scores) return null
     if (typeof settings !== 'object' || typeof scores !== 'object') return null
     if (soundEnabled !== undefined && typeof soundEnabled !== 'boolean') return null
+    if (hapticsEnabled !== undefined && typeof hapticsEnabled !== 'boolean') return null
 
     const { mode, difficulty, humanMark } = settings as Record<string, unknown>
     if (mode !== 'ai' && mode !== 'local') return null
@@ -39,6 +41,7 @@ export function parseSaved(raw: string | null): Saved | null {
       settings: { mode, difficulty, humanMark },
       scores: { X, O, draws },
       soundEnabled: soundEnabled ?? true,
+      hapticsEnabled: hapticsEnabled ?? true,
     }
   } catch {
     return null

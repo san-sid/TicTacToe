@@ -5,6 +5,7 @@ const valid = {
   settings: { mode: 'ai', difficulty: 'unbeatable', humanMark: 'O' },
   scores: { X: 3, O: 1, draws: 2 },
   soundEnabled: true,
+  hapticsEnabled: true,
 }
 
 describe('parseSaved', () => {
@@ -13,8 +14,11 @@ describe('parseSaved', () => {
   })
 
   it('defaults sound effects on for previously saved games', () => {
-    const { soundEnabled: _soundEnabled, ...legacy } = valid
-    expect(parseSaved(JSON.stringify(legacy))?.soundEnabled).toBe(true)
+    const { soundEnabled: _soundEnabled, hapticsEnabled: _hapticsEnabled, ...legacy } = valid
+    expect(parseSaved(JSON.stringify(legacy))).toMatchObject({
+      soundEnabled: true,
+      hapticsEnabled: true,
+    })
   })
 
   it('returns null when nothing is stored', () => {
@@ -33,6 +37,7 @@ describe('parseSaved', () => {
     expect(parseSaved(JSON.stringify({ ...valid, scores: { X: -1, O: 0, draws: 0 } }))).toBeNull()
     expect(parseSaved(JSON.stringify({ ...valid, scores: { X: 1.5, O: 0, draws: 0 } }))).toBeNull()
     expect(parseSaved(JSON.stringify({ ...valid, soundEnabled: 'yes' }))).toBeNull()
+    expect(parseSaved(JSON.stringify({ ...valid, hapticsEnabled: 'yes' }))).toBeNull()
     expect(parseSaved(JSON.stringify({ settings: valid.settings }))).toBeNull()
   })
 })
