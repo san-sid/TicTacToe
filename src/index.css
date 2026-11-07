@@ -1,0 +1,411 @@
+/* ---------------------------------------------------------------
+   Design tokens
+   Everything visual comes from these variables, so the whole look
+   (and the dark theme) can be changed in one place.
+   --------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  --bg: #f5f5f7;
+  --panel: rgba(255, 255, 255, 0.72);
+  --face: #ffffff;
+  --face-hover: #f7f7fa;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --hairline: rgba(0, 0, 0, 0.08);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px rgba(0, 0, 0, 0.07);
+
+  --x: #003da5;
+  --o: #e10600;
+  --accent: #f2c300;
+  --on-accent: #1d1d1f;
+
+  --segment-bg: rgba(118, 118, 128, 0.12);
+  --segment-pill: #ffffff;
+  --segment-pill-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+
+  --radius-panel: 22px;
+  --radius-cell: 24px;
+
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue',
+    system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --panel: rgba(28, 28, 30, 0.72);
+    --face: #1c1c1e;
+    --face-hover: #252528;
+    --text: #f5f5f7;
+    --text-secondary: #98989f;
+    --hairline: rgba(255, 255, 255, 0.1);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 10px 28px rgba(0, 0, 0, 0.5);
+
+    --x: #5b9bff;
+    --o: #ff453a;
+    --accent: #ffd60a;
+    --on-accent: #1d1d1f;
+
+    --segment-bg: rgba(118, 118, 128, 0.24);
+    --segment-pill: #636366;
+    --segment-pill-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Layout
+   --------------------------------------------------------------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: min(100% - 32px, 420px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  /* Top-aligned (not centred) so the board stays put when the settings panel resizes. */
+  padding-block: max(28px, env(safe-area-inset-top)) max(28px, env(safe-area-inset-bottom));
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.title__x {
+  color: var(--x);
+}
+
+.title__o {
+  color: var(--o);
+}
+
+.tagline {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------
+   Settings panel and segmented controls
+   --------------------------------------------------------------- */
+.panel {
+  padding: 10px;
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-panel);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+.panel__extra {
+  overflow: hidden;
+}
+
+.panel__extra-inner {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.segmented {
+  display: flex;
+  padding: 2px;
+  background: var(--segment-bg);
+  border-radius: 11px;
+}
+
+.segmented__item {
+  position: relative;
+  flex: 1;
+  padding: 7px 8px;
+  background: none;
+  border: 0;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.segmented__item[data-active='true'] {
+  font-weight: 600;
+}
+
+.segmented__pill {
+  position: absolute;
+  inset: 0;
+  background: var(--segment-pill);
+  border-radius: 9px;
+  box-shadow: var(--segment-pill-shadow);
+}
+
+.segmented__label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------------------------------------------------------------
+   Scoreboard
+   --------------------------------------------------------------- */
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px 10px;
+  background: var(--face);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.score__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.score[data-tone='x'] .score__label {
+  color: var(--x);
+}
+
+.score[data-tone='o'] .score__label {
+  color: var(--o);
+}
+
+.score__value {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------
+   Board
+   The squares have no gaps between them (the spacing is padding inside
+   each one), so the win line can be drawn on an exact 3 x 3 grid.
+   --------------------------------------------------------------- */
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cell {
+  padding: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.cell[aria-disabled='true'] {
+  cursor: default;
+}
+
+.cell__face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--face);
+  border-radius: var(--radius-cell);
+  box-shadow: var(--shadow);
+  transition: background-color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .cell[aria-disabled='false']:hover .cell__face {
+    background: var(--face-hover);
+  }
+}
+
+.mark {
+  width: 62%;
+  aspect-ratio: 1;
+  overflow: visible;
+  transition: opacity 0.3s ease;
+}
+
+.mark path,
+.mark circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.mark--x {
+  color: var(--x);
+}
+
+.mark--o {
+  color: var(--o);
+}
+
+.cell[data-dimmed='true'] .mark {
+  opacity: 0.25;
+}
+
+.winline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px color-mix(in srgb, currentColor 45%, transparent));
+}
+
+.winline line {
+  stroke: currentColor;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.winline--x {
+  color: var(--x);
+}
+
+.winline--o {
+  color: var(--o);
+}
+
+/* ---------------------------------------------------------------
+   Status, actions, footer
+   --------------------------------------------------------------- */
+.status-area {
+  min-height: 32px;
+  text-align: center;
+}
+
+.status {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.status[data-tone='x'] {
+  color: var(--x);
+}
+
+.status[data-tone='o'] {
+  color: var(--o);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.button {
+  padding: 13px 28px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    filter: brightness(1.08);
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.link {
+  padding: 6px 10px;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.link:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion
+   (Framer Motion animations are handled by <MotionConfig> in main.tsx.)
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
