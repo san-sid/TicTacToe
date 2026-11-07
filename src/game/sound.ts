@@ -54,7 +54,7 @@ export async function playSoftSound(sound: Sound): Promise<void> {
     oscillator.type = 'sine'
     oscillator.frequency.setValueAtTime(note.frequency, start)
     volume.gain.setValueAtTime(0.0001, start)
-    volume.gain.exponentialRampToValueAtTime(0.035, start + 0.012)
+    volume.gain.exponentialRampToValueAtTime(0.11, start + 0.012)
     volume.gain.exponentialRampToValueAtTime(0.0001, end)
 
     oscillator.connect(volume)
