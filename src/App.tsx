@@ -33,6 +33,7 @@ export default function App() {
 
   const message = statusText(state)
   const roundOver = state.status !== 'playing'
+  const winRevealDelay = state.status === 'won' ? 0.82 : 0
   const hasScores = state.scores.X + state.scores.O + state.scores.draws > 0
   const previousBoard = useRef(state.board)
 
@@ -116,27 +117,81 @@ export default function App() {
 
       <Scoreboard state={state} />
 
-      <Board
-        board={state.board}
-        winLine={state.winLine}
-        winner={state.winner}
-        interactive={game.humanTurn}
-        onPlay={handlePlay}
-      />
+      <div className="board-stage">
+        <motion.div
+          className="board-stage__grid"
+          data-collapsed={roundOver}
+          animate={{ opacity: roundOver ? 0 : 1, scale: roundOver ? 0.96 : 1 }}
+          transition={{
+            duration: roundOver ? 0.42 : 0.08,
+            delay: roundOver ? winRevealDelay : 0,
+            ease: roundOver ? [0.22, 1, 0.36, 1] : 'easeOut',
+          }}
+          aria-hidden={roundOver}
+          inert={roundOver}
+        >
+          <Board
+            board={state.board}
+            winLine={state.winLine}
+            winner={state.winner}
+            interactive={game.humanTurn}
+            onPlay={handlePlay}
+          />
+        </motion.div>
+        <AnimatePresence initial={false}>
+          {roundOver && (
+            <motion.div
+              key="round-result"
+              className="result-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.08, delay: 0, ease: 'easeOut' } }}
+              transition={{
+                duration: roundOver ? 0.24 : 0.08,
+                delay: roundOver ? winRevealDelay : 0,
+                ease: 'easeOut',
+              }}
+            >
+              <motion.div
+                className="result-card"
+                data-tone={state.status === 'won' && state.winner ? state.winner.toLowerCase() : 'neutral'}
+                role="status"
+                initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{
+                  opacity: 0,
+                  y: 0,
+                  scale: 1,
+                  transition: { duration: 0.08, delay: 0, ease: 'easeOut' },
+                }}
+                transition={{
+                  duration: roundOver ? 0.36 : 0.08,
+                  delay: winRevealDelay + 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <span className="result-card__eyebrow">Round complete</span>
+                <p className="result-card__title">{message}</p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <div className="status-area" aria-live="polite">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.p
-            key={message}
-            className="status"
-            data-tone={state.status === 'won' && state.winner ? state.winner.toLowerCase() : 'neutral'}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.18 }}
-          >
-            {message}
-          </motion.p>
+          {!roundOver && (
+            <motion.p
+              key={message}
+              className="status"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18 }}
+            >
+              {message}
+            </motion.p>
+          )}
         </AnimatePresence>
       </div>
 

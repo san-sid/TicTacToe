@@ -284,6 +284,22 @@ button {
   -webkit-user-select: none;
 }
 
+.board-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.board-stage__grid {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+}
+
+.board-stage__grid[data-collapsed='true'] {
+  pointer-events: none;
+}
+
 .cell {
   padding: 6px;
   background: none;
@@ -432,6 +448,51 @@ button {
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.result-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: min(100%, 280px);
+  margin: 0 auto;
+  padding: 14px 20px;
+  background: var(--face);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.result-card__eyebrow {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.result-card__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.result-card[data-tone='x'] .result-card__title {
+  color: var(--x);
+}
+
+.result-card[data-tone='o'] .result-card__title {
+  color: var(--o);
 }
 
 .status[data-tone='x'] {
